@@ -1,3 +1,6 @@
 logs/*
+dr_main/PrivateConsts.py
 *.pyc
 *.bak
+static/download/*
+note.fls

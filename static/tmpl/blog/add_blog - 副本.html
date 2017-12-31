@@ -1,0 +1,103 @@
+{% extends 'blog/base.html' %}
+{% block styleForBootstrap %}
+    <link href="/static/libs/tether/tether.min.css" rel="stylesheet" type='text/css'>
+    <script type="text/javascript" src="/static/libs/tether/tether.min.js"></script>
+    {{ block.super }}
+{% endblock %}
+{% block scriptForNow %}
+    <link href="/static/libs/bootstrap/css/bootstrap4.min.css" rel="stylesheet">
+    <link href="/static/libs/summernote-master/dist/summernote-bs4.css" rel="stylesheet" type='text/css'>
+    <script type="text/javascript" src="/static/libs/summernote-master/dist/summernote-bs4.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+          $('.summernote').summernote({
+            placeholder: 'Hello FLS',
+            height: 300,
+            tabsize: 2,
+            focus: true
+            ,callbacks:{
+                onImageUpload: function(files){
+                    sendFile(files);
+                    }
+                }
+            });
+        });
+        
+        function sendFile(files){
+            var formdata = new FormData();
+            //file_tmp = $('.note-image-input')[0].files[0];
+            file_tmp = files[0];
+            formdata.append("file", file_tmp);
+            formdata.append("type", "blog");
+            $.ajax({
+                data : formdata,
+                type : "POST",
+                url : "{% url 'uploadFile' %}",
+                cache : false,
+                contentType : false,
+                processData : false,
+                dataType : "json",
+                success: function(data) {
+                    url = data.msg;
+                     $("#summernote").summernote('insertImage', url, 'image name'); 
+                },
+                error:function(){
+                    alert("上传失败");
+                }
+            });
+        }
+        
+        function saveInfo(){
+            $("#content").val($('#summernote').summernote('code'));
+            document.formx1.submit();
+        }
+    </script>
+{% endblock %}
+{% block page_content %}
+<header class="intro-header" style="background-image: url('/static/img/blog/background/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1">
+                <div class="site-heading">
+                    <h1>DarkRipples</h1>
+                    <span class="subheading">A Blog For DarkRipples</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+<div class="container">
+    <br/>
+    <form name="formx1" action="{% url 'add_blog' %}" method="post" enctype="multipart/form-data">
+        <div class="form-group row">
+			<label for="" class="col-sm-1 col-form-label">标题</label>
+			<div class="col-sm-7">
+				<input type="text" class="form-control" placeholder="请输入标题" id="title" name="title" value="">
+			</div>
+        </div>
+        <div class="form-group row">
+            <label for="" class="col-sm-1 col-form-label">类型</label>
+			<div class="col-sm-2">
+				<div class="select-after">
+					<select id="note_type" name="note_type" class="form-control">
+						<option value="测试">测试</option>
+					</select>
+				</div>
+			</div>
+            <label for="" class="col-sm-1 col-form-label">是否公开</label>
+            <div class="col-sm-1.5">
+				<div class="select-after">
+					<select id="isOpen" name="isOpen" class="form-control">
+						<option value="1">是</option>
+						<option value="0">否</option>
+					</select>
+				</div>
+			</div>
+		</div>
+        <div id="summernote" name="summernote" class="summernote"></div>
+        <input type="hidden" id="content" name="content" value="" />
+        <br /><a class="btn btn-outline-primary" href="javascript: saveInfo();">保存</a>
+    </form>
+</div>
+<hr>
+{% endblock %}

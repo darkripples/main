@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block meta %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="A Blog System">
+    <meta name="author" content="DarkRipples(fls)">
+    {% endblock %}
+    {% block title %}<title>黑色涟漪</title>{% endblock %}
+    <link rel="shortcut icon" type="image/x-icon" href="/static/img/favicon.ico" media="screen"/>
+    {% block styleForBootstrap %}
+    <!-- Bootstrap core CSS -->
+    <link href="/static/libs/bootstrap/css/bootstrap4_b.min.css" rel="stylesheet">
+    {% endblock %}
+    {% block scriptForJqueryAndBootstrap %}
+    <script src="/static/libs/jquery/jquery.min.js"></script>
+    <script src="/static/libs/bootstrap/js/bootstrap.min.js"></script>
+    {% endblock %}
+    {% block scriptForNow %}
+    <!-- Theme JavaScript -->
+    <script src="/static/libs/js/blog.min.js"></script>
+    <link href="/static/libs/css/theme_lora.css" rel="stylesheet" type='text/css'>
+    <link href="/static/libs/css/theme_openSans.css" rel="stylesheet" type='text/css'>
+    <!-- Custom styles for this template -->
+    <link href="/static/libs/css/blog.min.css" rel="stylesheet">
+    
+    <style>
+    .navbar-toggler {
+        z-index: 1;
+    }
+    
+    @media (max-width: 576px) {
+        nav > .container {
+            width: 100%;
+        }
+    }
+    </style>
+    {% endblock %}
+    
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar fixed-top navbar-toggleable-md navbar-light" id="mainNav">
+        <div class="container">
+            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                Menu <i class="fa fa-bars"></i>
+            </button>
+            <a class="navbar-brand page-scroll" href="{% url 'index' %}">DarkRipples</a>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link page-scroll" href="{% url 'index' %}">首页</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link page-scroll " href="{% url 'index' %}?note_type=测试">测试</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link page-scroll" href="{% url 'index' %}?note_type=杂文">杂文</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link page-scroll" href="{% url 'index' %}?note_type=其他">其他</a>
+                    </li>
+                    {% if user %}
+                    <!-- 用户已登录 -->
+                    <li class="nav-item">
+                        <a class="nav-link page-scroll" href="{% url 'add_blog' %}">+</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+    {% block page_content %}
+    {% endblock %}
+    
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1">
+                    <p class="copyright text-muted">Copyright &copy; DarkRipples.com 2017. 版权所有
+                        <br/>
+                        <a href="http://www.miitbeian.gov.cn/" target="_parent">鲁ICP备15002989号
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+
+</html>
