@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import F, Q
-from .models import NoteContent, NoteUser
+from .models import NoteContent, NoteUser, NoteType
 from .Consts import PAGESIZE
 from .forms import NoteContentForm
 from fls_utils.utils import e_now
@@ -38,14 +38,14 @@ def index(request):
     q = Q()
     if note_type:
         # 类型
-        q.add(Q(note_type=note_type), Q.OR )
-    if not request.session.get('user'):
+        q.add(Q(note_type=note_type), Q.AND )
+    if not request.session.get('dr_user'):
         # 未登录，只展示公开类型的
-        q.add( Q(isOpen='1'), Q.OR )
+        q.add( Q(isOpen='1'), Q.AND )
     else:
         # 已登录，展示自己的or别人公开的
-        now_username = eval(request.session.get('user')).get('user')
-        q.add( Q(isOpen='1')|Q(author__user__username__exact=now_username), Q.OR)
+        now_username = eval(request.session.get('dr_user')).get('user')
+        q.add( Q(isOpen='1')|Q(author__user__username__exact=now_username), Q.AND)
     # 获取结果集
     blog_lists = NoteContent.objects.filter(q).order_by('-create_time')[startPos:endPos]
     if page == 1 and allPage == 1:
@@ -54,7 +54,8 @@ def index(request):
         # 总页数
         allPage = allPage//PAGESIZE if allPage%PAGESIZE==0 else allPage//PAGESIZE+1
     
-    context['user'] = request.session.get('user')
+    context['type_all'] = NoteType.objects.all()
+    context['dr_user'] = request.session.get('dr_user')
     context['blog_lists'] = blog_lists
     context['page'] = int(page)
     context['allPage'] = allPage
@@ -86,7 +87,7 @@ def add_blog(request):
         form = NoteContentForm(request.POST)
         if form.is_valid():
             # 获取内容
-            now_username = eval(request.session.get('user'))
+            now_username = eval(request.session.get('dr_user'))
             author = NoteUser.objects.get(id=now_username['id'])
             now_time = e_now(fmt='%Y-%m-%d %H:%M:%S')
             new_models = NoteContent(
@@ -107,7 +108,24 @@ def add_blog(request):
         return HttpResponse( json.dumps( context ) )
     else:
         # 访问页面
-        if not request.session.get('user'):
+        if not request.session.get('dr_user'):
             # 二次判断，未登录，不可新增
             return redirect('/')
+    context['type_all'] = NoteType.objects.all()
     return render( request, 'blog/add_blog.html', context )
+
+@csrf_exempt
+def del_blog(request):
+    # 删除
+    context = {'flag':'fail'}
+    try:
+        if request.is_ajax() and request.method == 'POST':
+            blog_id = request.POST.get('id')
+            now_username = eval(request.session.get('dr_user','{}')).get('user')
+            logger.debug("blog.views.del_blog.id=" + str(blog_id) + "|user=" + str(now_username))
+            if now_username and blog_id:
+                NoteContent.objects.get(id=str(blog_id)).delete()
+                context['flag'] = 'succ'
+    except Exception as e:
+        logger.error(repr(e))
+    return HttpResponse( json.dumps( context ) )

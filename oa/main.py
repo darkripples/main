@@ -29,7 +29,7 @@ def login( req ):
             if user:
                 #比较成功，跳转index
                 auth.login(req, user)
-                req.session['user'] = NoteUser.objects.get(user=user.id).toJSON()
+                req.session['dr_user'] = NoteUser.objects.get(user=user.id).toJSON()
                 context = {'isLogin': True}
                 return redirect('/')
             else:
@@ -37,7 +37,7 @@ def login( req ):
                 context = {'isLogin': False,'pawd':False}
                 return render(req, 'login.html', context)
     else:
-        if req.session.get('user'):
+        if req.session.get('dr_user'):
             # 已登录
             context = {'isLogin': True}
             return redirect('/blog/')
@@ -75,7 +75,7 @@ def register_view(req):
             user.save()
 
             #添加到session
-            req.session['user'] = user
+            req.session['dr_user'] = user
             #调用auth登录
             auth.login(req, user)
             #重定向到首页

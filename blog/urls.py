@@ -14,6 +14,8 @@ urlpatterns = [
     path('blog_detail/', views.blog_detail, name='blog_detail'),
     # add
     path('add_blog/', views.add_blog, name='add_blog'),
+    # del
+    path('del_blog/', views.del_blog, name='del_blog'),
     # UploadFile
     path('uploadFile/', uploadFile, name='uploadFile'),
 ]

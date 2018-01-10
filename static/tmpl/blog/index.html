@@ -1,4 +1,8 @@
 {% extends 'blog/base.html' %}
+{% block scriptForNow %}
+{{ block.super }}
+<script src="/static/js/blog/index.js"></script>
+{% endblock %}
 {% block page_content %}
 <!-- Page Header -->
 <header class="intro-header" style="background-image: url('/static/img/blog/background/home-bg.jpg')">
@@ -30,10 +34,10 @@
                         {{ blog_list.title }}
                     </h2>
                     <h3 class="post-subtitle">
-                        {{ blog_lists.note|safe}}
+                        {{ blog_list.note|safe }}
                     </h3>
                 </a>
-                <p class="post-meta">Posted by <a href="#">{{blog_list.author}}</a> on {{blog_list.create_time}}[{{blog_list.view_count}}]</p>
+                <p class="post-meta"><a href="#" onclick="del_blog('{{blog_list.id}}')">[x]</a>Posted by <a href="#">{{blog_list.author}}</a> on {{blog_list.create_time}}[{{blog_list.view_count}}]</p>
             </div>
             <hr>
             {% endfor %}

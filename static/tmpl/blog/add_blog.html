@@ -67,7 +67,7 @@
                             alert(k+"#"+v);
                         });
                     }else{
-                        document.location = '/';
+                        document.location = '/blog/';
                     }
                 },
                 error:function(){
@@ -104,7 +104,9 @@
 			<div class="col-sm-2">
 				<div class="select-after">
 					<select id="note_type" name="note_type" class="form-control">
-						<option value="测试">测试</option>
+                        {% for mx in type_all %}
+						<option value="{{mx.name}}">{{mx.name}}</option>
+                        {% endfor %}
 					</select>
 				</div>
 			</div>

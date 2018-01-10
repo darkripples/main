@@ -53,16 +53,12 @@
                     <li class="nav-item">
                         <a class="nav-link page-scroll" href="{% url 'index' %}">首页</a>
                     </li>
+                    {% for mx in type_all %}
                     <li class="nav-item">
-                        <a class="nav-link page-scroll " href="{% url 'index' %}?note_type=测试">测试</a>
+                        <a class="nav-link page-scroll " href="{% url 'index' %}?note_type={{mx.name}}">{{mx.name}}</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link page-scroll" href="{% url 'index' %}?note_type=杂文">杂文</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link page-scroll" href="{% url 'index' %}?note_type=其他">其他</a>
-                    </li>
-                    {% if user %}
+                    {% endfor %}
+                    {% if dr_user %}
                     <!-- 用户已登录 -->
                     <li class="nav-item">
                         <a class="nav-link page-scroll" href="{% url 'add_blog' %}">+</a>
